@@ -18,6 +18,6 @@ body {
   }
 
   * {
-    @apply font-quicksand bg-white;
+    @apply bg-white font-quicksand;
   }
 }
