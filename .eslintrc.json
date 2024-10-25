@@ -1,3 +1,25 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "@rocketseat/eslint-config/next",
+    "plugin:@tanstack/query/recommended",
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "plugins": ["eslint-plugin-import-helpers"],
+  "rules": {
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          ["/^react/"],
+          ["/^next/", "module"],
+          ["/^~/"],
+          ["parent", "sibling", "index"]
+        ],
+        "alphabetize": { "order": "asc", "ignoreCase": true }
+      }
+    ],
+    "react/no-unescaped-entities": 0
+  }
 }
