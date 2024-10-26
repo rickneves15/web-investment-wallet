@@ -11,15 +11,19 @@ export function useInvalidateQueries() {
   const perPage = searchParams.get('perPage')
     ? Number(searchParams.get('perPage'))
     : 5
-  const search = searchParams.get('search') ? searchParams.get('search') : null
+  const search = searchParams.get('search') ? searchParams.get('search') : ''
 
   async function invalidate() {
-    queryClient.invalidateQueries({ queryKey: ['metrics', 'total-gross'] })
-    queryClient.invalidateQueries({ queryKey: ['metrics', 'total-assets'] })
-    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
+      queryKey: ['metrics', 'total-gross'],
+    })
+    await queryClient.invalidateQueries({
+      queryKey: ['metrics', 'total-assets'],
+    })
+    await queryClient.invalidateQueries({
       queryKey: ['metrics', 'total-total-monthly-transactions'],
     })
-    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
       queryKey: ['assets', page, perPage, search],
     })
   }
