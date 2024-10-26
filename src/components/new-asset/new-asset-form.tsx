@@ -4,9 +4,8 @@ import { useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNumberFormat } from '@react-input/number-format'
-import { useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import { CalendarIcon, Loader2, Plus } from 'lucide-react'
+import { CalendarIcon, Plus } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -34,6 +33,7 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { AssetLabelChartType } from '~/constant/asset-type'
+import { useInvalidateQueries } from '~/hooks/use-invalidate-queries'
 import { formatCurrency, reaisToDecimal } from '~/lib/currency'
 import { cn } from '~/lib/utils'
 import { AssetType } from '~/schemas/asset'
@@ -43,20 +43,15 @@ import {
   createAssetFormSchema,
 } from '~/services/schemas/assets/create-asset-form'
 
+import { ButtonSubmitForm } from '../button-submit-form'
+
 type NewAssetFormProps = {
   onNewAsset: () => void
 }
 
 export function NewAssetForm({ onNewAsset }: NewAssetFormProps) {
   const searchParams = useSearchParams()
-  const queryClient = useQueryClient()
-  const inputRef = useNumberFormat({
-    locales: 'pt-BR',
-    currency: 'BRL',
-    currencyDisplay: 'symbol',
-    maximumFractionDigits: 2,
-    format: 'currency',
-  })
+  const { invalidate } = useInvalidateQueries()
 
   const form = useForm<CreateAssetForm>({
     resolver: zodResolver(createAssetFormSchema),
@@ -73,6 +68,14 @@ export function NewAssetForm({ onNewAsset }: NewAssetFormProps) {
   const inputQuote = form.watch('quote')
   const total = Number(inputQuantity) * reaisToDecimal(inputQuote)
 
+  const inputRef = useNumberFormat({
+    locales: 'pt-BR',
+    currency: 'BRL',
+    currencyDisplay: 'symbol',
+    maximumFractionDigits: 2,
+    format: 'currency',
+  })
+
   const page = searchParams.get('page') ? Number(searchParams.get('page')) : 1
   const perPage = searchParams.get('perPage')
     ? Number(searchParams.get('perPage'))
@@ -84,14 +87,7 @@ export function NewAssetForm({ onNewAsset }: NewAssetFormProps) {
       await createAsset(values)
 
       form.reset()
-      queryClient.invalidateQueries({ queryKey: ['metrics', 'total-gross'] })
-      queryClient.invalidateQueries({ queryKey: ['metrics', 'total-assets'] })
-      queryClient.invalidateQueries({
-        queryKey: ['metrics', 'total-total-monthly-transactions'],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['assets', page, perPage, search],
-      })
+      invalidate()
       onNewAsset()
       toast.success('Ativo criado com sucesso!')
     } catch (error) {
@@ -223,23 +219,14 @@ export function NewAssetForm({ onNewAsset }: NewAssetFormProps) {
               amount: total,
             })}
           </span>
-          <Button
-            type="submit"
-            className="flex justify-between rounded-xl border border-blue-400 bg-blue-400 text-xs font-semibold leading-tight text-white hover:bg-blue-400/90"
+
+          <ButtonSubmitForm
+            isSubmitting={form.formState.isSubmitting}
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Enviando...
-              </>
-            ) : (
-              <>
-                <Plus className="size-4 bg-transparent" />
-                Adicionar Ativo
-              </>
-            )}
-          </Button>
+            <Plus className="size-4 bg-transparent" />
+            Adicionar Ativo
+          </ButtonSubmitForm>
         </div>
       </form>
     </Form>
