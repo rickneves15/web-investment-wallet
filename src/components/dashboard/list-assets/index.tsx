@@ -1,10 +1,9 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
-import { useDebounceCallback, useDebounceValue } from 'usehooks-ts'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation'
 
 import { BuyAsset } from '~/components/assets/buy-asset'
 import { DeleteAsset } from '~/components/assets/delete-asset'
@@ -30,23 +29,24 @@ import { SkeletonListAssets } from './skeleton-list-assets'
 export function ListAssets() {
   const searchParams = useSearchParams()
   const { setQueryParams } = useQueryParams()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const page = searchParams.get('page') ? Number(searchParams.get('page')) : 1
   const perPage = searchParams.get('perPage')
     ? Number(searchParams.get('perPage'))
     : 5
-  const search = searchParams.get('search') ? searchParams.get('search') : ''
-
-  const [filter, setFilter] = useDebounceValue(search, 500)
+  const [search, setSearch] = useState(searchParams.get('search') ?? '')
 
   const { data: assets, isLoading } = useQuery({
-    queryKey: ['assets', page, perPage, filter],
+    queryKey: ['assets', page, perPage, search],
     queryFn: () =>
       getAssets({
         page,
         perPage,
-        search: filter ?? null,
+        search: search ?? null,
       }),
+    placeholderData: (previousData) => previousData,
   })
 
   const { data, ...pagination } = assets ?? ({} as GetAssetsResponse)
@@ -55,10 +55,9 @@ export function ListAssets() {
     setQueryParams('perPage', perPage)
   }
 
-  const handleFilter = useDebounceCallback((filter: string) => {
-    setFilter(filter)
-    setQueryParams('search', filter)
-  }, 500)
+  useEffect(() => {
+    setQueryParams('search', search ?? '')
+  }, [pathname, router, search, setQueryParams])
 
   return (
     <>
@@ -73,7 +72,7 @@ export function ListAssets() {
           <NewAsset />
         </CardHeader>
         <CardContent className="flex flex-col gap-y-4 px-4">
-          <ListAssetsFilters filter={filter} onFilter={handleFilter} />
+          <ListAssetsFilters search={search} onSearch={setSearch} />
 
           {isLoading && !data && <SkeletonListAssets />}
 

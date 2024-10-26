@@ -1,22 +1,23 @@
 import { Input } from '~/components/ui/input'
 
 type ListAssetsFiltersProps = {
-  filter: string | null
-  onFilter: (filter: string) => void
+  search: string
+  onSearch: (search: string) => void
 }
 
 export function ListAssetsFilters({
-  filter,
-  onFilter,
+  search,
+  onSearch,
 }: ListAssetsFiltersProps) {
   return (
     <div className="flex">
       <Input
-        value={filter ?? ''}
+        id="search-input-assets"
+        value={search}
         type="search"
         placeholder="Buscar ativo"
         className="h-8 w-52 rounded-lg bg-gray-50 shadow-inner"
-        onChange={(e) => onFilter(e.target.value)}
+        onChange={(e) => onSearch(e.target.value)}
       />
     </div>
   )

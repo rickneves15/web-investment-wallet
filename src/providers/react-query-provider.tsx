@@ -12,7 +12,7 @@ export function ReactQueryProvider({ children }: PropsWithChildren) {
   return (
     <QueryClientProvider client={client}>
       {/* TODO: Remove this in production */}
-      <ReactQueryDevtools initialIsOpen={true} />
+      {/* <ReactQueryDevtools initialIsOpen={true} /> */}
       {children}
     </QueryClientProvider>
   )
