@@ -1,8 +1,12 @@
 'use client'
 
+import { Suspense } from 'react'
+
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
+import { useDebounceCallback, useDebounceValue } from 'usehooks-ts'
 
+import { NewAsset } from '~/components/new-asset'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import {
   Select,
@@ -28,15 +32,17 @@ export function ListAssets() {
   const perPage = searchParams.get('perPage')
     ? Number(searchParams.get('perPage'))
     : 5
-  const search = searchParams.get('search') ? searchParams.get('search') : null
+  const search = searchParams.get('search') ? searchParams.get('search') : ''
+
+  const [filter, setFilter] = useDebounceValue(search, 500)
 
   const { data: assets, isLoading } = useQuery({
-    queryKey: ['assets', page, perPage, search],
+    queryKey: ['assets', page, perPage, filter],
     queryFn: () =>
       getAssets({
         page,
         perPage,
-        search,
+        search: filter ?? null,
       }),
   })
 
@@ -46,23 +52,37 @@ export function ListAssets() {
     setQueryParams('perPage', perPage)
   }
 
+  const handleFilter = useDebounceCallback((filter: string) => {
+    setFilter(filter)
+    setQueryParams('search', filter)
+  }, 500)
+
   return (
     <Card className="col-span-full xl:col-span-7">
       <CardHeader className="flex flex-row items-center justify-between px-4">
         <CardTitle className="text-xl font-bold leading-3 text-gray-500">
           Lista de ativos
         </CardTitle>
+        <NewAsset />
       </CardHeader>
       <CardContent className="flex flex-col gap-y-4 px-4">
+        <ListAssetsFilters filter={filter} onFilter={handleFilter} />
+
         {isLoading && !data && <SkeletonListAssets />}
 
         {data && (
           <>
-            <ListAssetsFilters />
             <div className="flex flex-col gap-y-10">
-              {data?.map((asset) => (
-                <ListAssetsItem key={asset.id} asset={asset} />
-              ))}
+              <Suspense
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                /* @ts-ignore */
+                key={page + perPage + filter}
+                fallback={<SkeletonListAssets />}
+              >
+                {data?.map((asset) => (
+                  <ListAssetsItem key={asset.id} asset={asset} />
+                ))}
+              </Suspense>
               <div className="flex flex-1 items-center justify-between">
                 <span className="text-xs font-normal leading-tight text-zinc-800/75">
                   Mostrando{' '}

@@ -1,5 +1,7 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import { useQuery } from '@tanstack/react-query'
 
 import { CardMetric } from '~/components/card-metric'
@@ -12,11 +14,15 @@ export function MetricTotalGross() {
     queryFn: getTotalGross,
   })
 
+  const totalGross = useMemo(() => {
+    return formatCurrency({
+      amount: data?.totalGross || 0,
+    })
+  }, [data])
+
   return (
     <CardMetric title="Saldo bruto" isLoading={isLoading}>
-      {formatCurrency({
-        amount: data?.totalGross || 0,
-      })}
+      {totalGross}
     </CardMetric>
   )
 }

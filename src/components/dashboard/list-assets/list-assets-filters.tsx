@@ -1,23 +1,22 @@
-'use client'
-
 import { Input } from '~/components/ui/input'
-import { useQueryParams } from '~/hooks/use-query-params'
 
-export function ListAssetsFilters() {
-  const { setQueryParams } = useQueryParams()
+type ListAssetsFiltersProps = {
+  filter: string | null
+  onFilter: (filter: string) => void
+}
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const search = e.target.value ?? null
-    setQueryParams('search', search)
-  }
-
+export function ListAssetsFilters({
+  filter,
+  onFilter,
+}: ListAssetsFiltersProps) {
   return (
     <div className="flex">
       <Input
+        value={filter ?? ''}
         type="search"
         placeholder="Buscar ativo"
         className="h-8 w-52 rounded-lg bg-gray-50 shadow-inner"
-        onChange={handleSearch}
+        onChange={(e) => onFilter(e.target.value)}
       />
     </div>
   )

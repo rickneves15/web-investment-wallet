@@ -1,4 +1,7 @@
+import { reaisToDecimal } from '~/lib/currency'
+
 import { api } from './api'
+import { CreateAssetForm } from './schemas/assets/create-asset-form'
 import {
   GetAssetsParams,
   getAssetsParamsSchema,
@@ -14,6 +17,18 @@ export async function getAssets(params: GetAssetsParams) {
       perPage,
       search: search ?? undefined,
     },
+  })
+
+  return response.data
+}
+
+export async function createAsset(asset: CreateAssetForm) {
+  const response = await api.post<GetAssetsResponse>('/assets', {
+    name: asset.name,
+    purchaseDate: asset.purchaseDate.toISOString(),
+    quantity: Number(asset.quantity),
+    quote: reaisToDecimal(asset.quote),
+    type: asset.type,
   })
 
   return response.data

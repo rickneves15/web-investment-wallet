@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Quicksand, Roboto } from 'next/font/google'
 
 import './globals.css'
+import { Toaster } from 'sonner'
+
 import { ReactQueryProvider } from '~/providers/react-query-provider'
 
 const quicksand = Quicksand({
@@ -30,6 +32,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${quicksand.variable} ${roboto.variable} antialiased`}>
         <ReactQueryProvider>{children}</ReactQueryProvider>
+        <Toaster richColors />
       </body>
     </html>
   )

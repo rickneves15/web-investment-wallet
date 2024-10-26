@@ -19,3 +19,11 @@ export function formatCurrency({
     return ''
   }
 }
+
+export function reaisToDecimal(reais: string): number {
+  const numericString = reais.replace(/[^\d.,]/g, '')
+
+  const numericValue = parseFloat(numericString.replace(',', '.'))
+
+  return numericValue
+}
