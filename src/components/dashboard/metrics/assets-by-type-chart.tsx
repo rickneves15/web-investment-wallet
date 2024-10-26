@@ -11,17 +11,17 @@ import {
   PieChart,
   ResponsiveContainer,
 } from 'recharts'
+import { useWindowSize } from 'usehooks-ts'
 
+import { Loader } from '~/components/loader'
 import { TurnOffDefaultPropsWarning } from '~/components/turn-off-default-props-warning'
 import { Card, CardContent } from '~/components/ui/card'
 import {
   AssetColorsChartType,
   AssetLabelChartType,
 } from '~/constant/asset-type'
-import { useWindowSize } from '~/hooks/use-window-size'
 import { formatCurrency } from '~/lib/currency'
 import { cn } from '~/lib/utils'
-import { Loader } from '~/loader'
 import { getAssetsByType } from '~/services/metrics'
 
 type CustomLegendProps = LegendProps & {
@@ -84,7 +84,7 @@ export function AssetsByTypeChart() {
     queryFn: getAssetsByType,
   })
 
-  const { width } = useWindowSize()
+  const { width = 0 } = useWindowSize()
   const isMobile = width < 640
 
   const chartData = React.useMemo(() => {
@@ -102,9 +102,9 @@ export function AssetsByTypeChart() {
   }, [chartData])
 
   return (
-    <Card className="col-span-full xl:col-span-5">
+    <Card className="col-span-full max-h-[300px] xl:col-span-5">
       <TurnOffDefaultPropsWarning />
-      <CardContent>
+      <CardContent className="flex h-full w-full items-center justify-center p-4">
         {isLoading && !data && <Loader />}
         {data && (
           <ResponsiveContainer width="100%" height={240}>

@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <Container>
       <Breadcrumb title="Meus Investimentos" icon={HouseIcon} />
-      <main className="flex flex-col gap-8">
+      <main className="flex flex-1 flex-col gap-8">
         <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <MetricTotalGross />
           <MetricTotalAssets />
