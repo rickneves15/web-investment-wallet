@@ -2,8 +2,9 @@ import { PropsWithChildren } from 'react'
 
 import { Loader2 } from 'lucide-react'
 
-import { Button } from './ui/button'
 import { cn } from '~/lib/utils'
+
+import { Button } from './ui/button'
 
 type ButtonSubmitFormProps = PropsWithChildren & {
   disabled?: boolean
@@ -20,7 +21,10 @@ export function ButtonSubmitForm({
   return (
     <Button
       type="submit"
-      className={cn("flex justify-between rounded-xl border border-blue-400 bg-blue-400 text-xs font-semibold leading-tight text-white hover:bg-blue-400/90", cla)}
+      className={cn(
+        'flex justify-between rounded-xl border border-blue-400 bg-blue-400 text-xs font-semibold leading-tight text-white hover:bg-blue-400/90',
+        className,
+      )}
       disabled={disabled}
     >
       {isSubmitting ? (
