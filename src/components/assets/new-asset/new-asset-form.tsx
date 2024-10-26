@@ -6,9 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNumberFormat } from '@react-input/number-format'
 import { format } from 'date-fns'
 import { CalendarIcon, Plus } from 'lucide-react'
-import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
+import { ButtonSubmitForm } from '~/components/button-submit-form'
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
 import {
@@ -43,14 +43,11 @@ import {
   createAssetFormSchema,
 } from '~/services/schemas/assets/create-asset-form'
 
-import { ButtonSubmitForm } from '../button-submit-form'
-
 type NewAssetFormProps = {
   onNewAsset: () => void
 }
 
 export function NewAssetForm({ onNewAsset }: NewAssetFormProps) {
-  const searchParams = useSearchParams()
   const { invalidate } = useInvalidateQueries()
 
   const form = useForm<CreateAssetForm>({
@@ -76,18 +73,12 @@ export function NewAssetForm({ onNewAsset }: NewAssetFormProps) {
     format: 'currency',
   })
 
-  const page = searchParams.get('page') ? Number(searchParams.get('page')) : 1
-  const perPage = searchParams.get('perPage')
-    ? Number(searchParams.get('perPage'))
-    : 5
-  const search = searchParams.get('search') ? searchParams.get('search') : null
-
   async function onSubmit(values: CreateAssetForm) {
     try {
       await createAsset(values)
 
       form.reset()
-      invalidate()
+      await invalidate()
       onNewAsset()
       toast.success('Ativo criado com sucesso!')
     } catch (error) {

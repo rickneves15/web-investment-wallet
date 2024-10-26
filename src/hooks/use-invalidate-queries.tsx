@@ -21,7 +21,10 @@ export function useInvalidateQueries() {
       queryKey: ['metrics', 'total-assets'],
     })
     await queryClient.invalidateQueries({
-      queryKey: ['metrics', 'total-total-monthly-transactions'],
+      queryKey: ['metrics', 'total-monthly-transactions'],
+    })
+    await queryClient.invalidateQueries({
+      queryKey: ['metrics', 'assets-grouped-by-type'],
     })
     await queryClient.invalidateQueries({
       queryKey: ['assets', page, perPage, search],

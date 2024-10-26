@@ -45,7 +45,7 @@ export function ListAssetsItem({ asset }: ListAssetsItemProps) {
         </span>
       </span>
       <span className="w-[10%]">
-        <ListAssetsItemActions />
+        <ListAssetsItemActions asset={asset} />
       </span>
     </div>
   )

@@ -105,7 +105,13 @@ export function AssetsByTypeChart() {
     <Card className="col-span-full max-h-[300px] xl:col-span-5">
       <TurnOffDefaultPropsWarning />
       <CardContent className="flex h-full w-full items-center justify-center p-4">
-        {isLoading && !data && <Loader />}
+        {isLoading && !data ? (
+          <Loader />
+        ) : (
+          <p className="text-xs font-medium text-black/40">
+            Nenhum dado disponível
+          </p>
+        )}
         {data && (
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>

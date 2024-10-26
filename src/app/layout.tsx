@@ -4,6 +4,7 @@ import { Quicksand, Roboto } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'sonner'
 
+import { ListAssetsActionsProvider } from '~/providers/list-assets-actions-provider'
 import { ReactQueryProvider } from '~/providers/react-query-provider'
 
 const quicksand = Quicksand({
@@ -31,7 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${quicksand.variable} ${roboto.variable} antialiased`}>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          <ListAssetsActionsProvider>{children}</ListAssetsActionsProvider>
+        </ReactQueryProvider>
         <Toaster richColors />
       </body>
     </html>
