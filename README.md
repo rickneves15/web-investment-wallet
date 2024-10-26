@@ -1,4 +1,5 @@
 <h1 align="center">Welcome to Web Investment Wallet 👋</h1>
+
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -7,6 +8,12 @@
 </p>
 
 > Api for tracking a client’s investment portfolio.
+
+## Preview
+
+<p align="center">
+  <img alt="License: MIT" src=".github/preview.png" />
+</p>
 
 ## Requirements
 
